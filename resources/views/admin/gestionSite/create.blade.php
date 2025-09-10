@@ -3,7 +3,13 @@
 @section('content')
 <div class="container mt-4">
     <div class="card shadow-sm p-4" style="border-radius: 12px; border: 1px solid #d1d5db;">
-        <h2 class="mb-4 text-center text-success">Ajouter un site</h2>
+
+
+           <h2 class="mb-4"
+                style="font-weight: 700; font-size: 1.8rem; color: #29aa49; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+
+                <span class="badge bg-success" style="font-size: 1.3rem;">Ajouter un site </span>
+            </h2>
 
         @if ($errors->any())
             <div class="alert alert-danger rounded-3">

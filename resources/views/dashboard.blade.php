@@ -60,25 +60,72 @@
             </div>
         </div>
 
-        {{-- Graphiques --}}
+        {{-- Graphique utilisateurs --}}
         <div class="row mb-4">
             <div class="col-md-6 mb-3">
                 <div class="card p-3 shadow-sm">
                     <h5>Inscription Utilisateurs (Mois)</h5>
-                    <div class="chart-wrapper">
-                        <canvas id="usersChart"></canvas>
-                    </div>
+                    <canvas id="usersChart"></canvas>
                 </div>
             </div>
-
-
         </div>
+
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const ctxUsers = document.getElementById('usersChart').getContext('2d');
+
+                    new Chart(ctxUsers, {
+                        type: 'line',
+                        data: {
+                            labels: {!! json_encode($months) !!},
+                            datasets: [{
+                                    label: 'Actifs',
+                                    data: {!! json_encode($activeByMonth->values()) !!},
+                                    borderColor: '#00b894',
+                                    backgroundColor: 'rgba(0,184,148,0.2)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7
+                                },
+                                {
+                                    label: 'En attente',
+                                    data: {!! json_encode($pendingByMonth->values()) !!},
+                                    borderColor: '#fd79a8',
+                                    backgroundColor: 'rgba(253,121,168,0.2)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    precision: 0
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
+        @endpush
 
 
 
         {{-- Table responsive --}}
-        <div class="card p-3 shadow-sm">
-            <h5>Liste des utilisateurs</h5>
+        <div class="card p-3 shadow-sm mt-4">
+            <h5>Liste des 10 derniers utilisateurs actifs</h5>
             <div class="table-responsive">
                 <table class="table table-striped table-hover">
                     <thead class="table-success">
@@ -91,85 +138,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>AGOLIGAN</td>
-                            <td>Ange</td>
-                            <td>001</td>
-                            <td>ange@example.com</td>
-                            <td>+229 90000000</td>
-                        </tr>
-                        <tr>
-                            <td>DOE</td>
-                            <td>John</td>
-                            <td>002</td>
-                            <td>john@example.com</td>
-                            <td>+229 91111111</td>
-                        </tr>
+                        @forelse($recentUsers as $user)
+                            <tr>
+                                <td>{{ $user->nom }}</td>
+                                <td>{{ $user->prenom }}</td>
+                                <td>{{ $user->matricule }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->contact }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">Aucun utilisateur actif trouvé</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
 
+
     </div>
 @endsection
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Users Chart
-            const ctxUsers = document.getElementById('usersChart').getContext('2d');
-            new Chart(ctxUsers, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Utilisateurs inscrits',
-                        data: [12, 19, 3, 5, 2, 3],
-                        borderColor: '#00b894',
-                        backgroundColor: 'rgba(0,184,148,0.2)',
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Accounts Chart
-            const ctxAccounts = document.getElementById('accountsChart').getContext('2d');
-            new Chart(ctxAccounts, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Actifs', 'Inactifs'],
-                    datasets: [{
-                        data: [100, 20],
-                        backgroundColor: ['#00b894', '#dfe6e9'],
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                    }
-                }
-            });
-        });
-    </script>
-@endpush
