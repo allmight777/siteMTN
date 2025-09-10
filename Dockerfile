@@ -2,28 +2,27 @@ FROM richarvey/nginx-php-fpm:3.1.6
 
 WORKDIR /var/www/html
 
-# Étape 1 : copier tout le projet
-COPY . /var/www/html
+# Copier les fichiers composer
+COPY composer.json composer.lock ./
 
-# Étape 2 : installer les dépendances
+# Installer les dépendances
 RUN composer install --no-dev --optimize-autoloader
+
+# Copier le reste du projet
+COPY . /var/www/html
 
 # Variables d'environnement
 ENV WEBROOT=/var/www/html/public \
-    PHP_ERRORS_STDERR=1 \
-    RUN_SCRIPTS=1 \
-    REAL_IP_HEADER=1 \
     APP_ENV=production \
     APP_DEBUG=false \
-    LOG_CHANNEL=stderr \
-    COMPOSER_ALLOW_SUPERUSER=1 \
-    SKIP_COMPOSER=1
+    LOG_CHANNEL=stderr
 
-# Étape 3 : config nginx
+# Copier la config nginx (à créer)
 COPY nginx.conf /etc/nginx/sites-enabled/default.conf
 
-# Étape 4 : script startup
+# Startup script Laravel uniquement
 COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
+# Commande d’exécution Render
 CMD ["/startup.sh"]
