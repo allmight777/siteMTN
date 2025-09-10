@@ -15,9 +15,10 @@ Route::get('/healthz', function () {
 });
 
 // Route pour afficher la page principale
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/healthz', function () {
+    return response()->json(['status' => 'ok']);
 });
+
 
 // Route pour le dashboard admin
 
