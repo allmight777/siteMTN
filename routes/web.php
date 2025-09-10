@@ -7,6 +7,13 @@ use App\Models\Site;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
+
+
+Route::get('/healthz', function () {
+    return response()->json(['status' => 'ok']);
+});
+
+
 // Route pour afficher la page principale
 Route::get('/', function () {
     return view('welcome');
