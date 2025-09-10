@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/healthz', function () {
-    return response()->json(['status' => 'ok']);
-});
 
+Route::get('/healthz', function () {
+    return response()->json(['status' => 'ok'], 200);
+});
 
 // Route pour afficher la page principale
 Route::get('/', function () {
