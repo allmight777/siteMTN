@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/healthz', function () {
-    return response()->json(['status' => 'ok'], 200);
-});
 
 
 // Route pour le dashboard admin
