@@ -4,12 +4,16 @@ set -e
 echo "✅ Installation des dépendances Laravel"
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
-echo "✅ Nettoyage des caches"
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-
-echo "✅ Lancement des migrations et seeds"
+echo "✅ Lancement des migrations (fresh + seed)"
 php artisan migrate:fresh --seed --force
 
-echo "✅ ✅ Laravel prêt ! Le serveur nginx + PHP-FPM est déjà lancé par l'image."
+echo "✅ Démarrage de Nginx et PHP-FPM"
+
+# Remplacer le port Nginx par celui fourni par Render
+sed -i "s/listen 80;/listen ${PORT};/" /etc/nginx/sites-enabled/default.conf
+
+# Lancer PHP-FPM
+php-fpm &
+
+# Lancer Nginx au premier plan (Render détectera ce processus)
+nginx -g 'daemon off;'
