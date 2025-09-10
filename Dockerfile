@@ -3,26 +3,32 @@ FROM richarvey/nginx-php-fpm:3.1.6
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers du projet dans le conteneur
+# Copier uniquement les fichiers composer pour installer les dépendances
+COPY composer.json composer.lock ./
+
+# Installer les dépendances Laravel
+RUN composer install --no-dev --optimize-autoloader
+
+# Copier le reste du code de l'application
 COPY . /var/www/html
 
 # Variables d'environnement Laravel & PHP
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV SKIP_COMPOSER 0
+ENV WEBROOT /var/www/html/public \
+    PHP_ERRORS_STDERR=1 \
+    RUN_SCRIPTS=1 \
+    REAL_IP_HEADER=1 \
+    APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    SKIP_COMPOSER=1
 
-# Installer dompdf (barryvdh/laravel-dompdf)
-RUN composer require barryvdh/laravel-dompdf
+# Copier la config nginx optimisée (tu la créeras dans ./nginx/default.conf)
+COPY nginx.conf /etc/nginx/sites-enabled/default.conf
 
 # Ajouter le script de démarrage personnalisé
 COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
-# Lancer le script personnalisé au démarrage
+# Commande de démarrage
 CMD ["/startup.sh"]
