@@ -21,7 +21,7 @@ ENV SKIP_COMPOSER 0
 RUN composer require barryvdh/laravel-dompdf
 
 # Ajouter le script de démarrage personnalisé
-COPY docker/startup.sh /startup.sh
+COPY startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
 # Lancer le script personnalisé au démarrage
