@@ -14,11 +14,6 @@ Route::get('/healthz', function () {
     return response()->json(['status' => 'ok'], 200);
 });
 
-// Route pour afficher la page principale
-Route::get('/healthz', function () {
-    return response()->json(['status' => 'ok']);
-});
-
 
 // Route pour le dashboard admin
 
