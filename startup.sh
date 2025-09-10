@@ -12,5 +12,4 @@ php artisan view:clear
 echo "✅ Lancement des migrations et seeds"
 php artisan migrate:fresh --seed --force
 
-echo "✅ Démarrage de Nginx + PHP-FPM"
-exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+echo "✅ ✅ Laravel prêt ! Le serveur nginx + PHP-FPM est déjà lancé par l'image."
